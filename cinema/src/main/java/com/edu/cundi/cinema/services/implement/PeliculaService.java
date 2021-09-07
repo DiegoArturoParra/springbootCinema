@@ -1,6 +1,8 @@
 package com.edu.cundi.cinema.services.implement;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.edu.cundi.cinema.DTOs.PeliculasDTO;
 import com.edu.cundi.cinema.DTOs.RespuestaDTO;
@@ -14,6 +16,10 @@ import org.springframework.stereotype.Service;
 @Qualifier("PeliculaService")
 public class PeliculaService implements ICRUD<Pelicula> {
     private RespuestaDTO respuesta = new RespuestaDTO();
+
+    PeliculaService() {
+
+    }
 
     @Override
     public RespuestaDTO getAll() {
@@ -47,8 +53,15 @@ public class PeliculaService implements ICRUD<Pelicula> {
 
     @Override
     public RespuestaDTO delete(Integer Id) {
-        // TODO Auto-generated method stub
-        return null;
+        List<Pelicula> encontrado = PeliculasDTO.listapeliculas.stream().filter(x -> Id == x.getId())
+                .collect(Collectors.toList());
+        if (encontrado.isEmpty()) {
+            return null;
+        }
+        Pelicula pelicula = encontrado.get(0);
+        PeliculasDTO.listapeliculas.remove(pelicula);
+        respuesta.setMensaje("se ha eliminado");
+        return respuesta;
     }
 
 }
