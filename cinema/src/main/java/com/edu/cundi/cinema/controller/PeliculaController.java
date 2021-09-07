@@ -58,7 +58,7 @@ public class PeliculaController {
         return ResponseEntity.ok(service.edit(entity));
     }
 
-    @DeleteMapping(value = "eliminar/{id}")
+    @DeleteMapping(value = "eliminar/{Id}")
     public ResponseEntity<?> EliminarPelicula(@PathVariable @Min(1) @NotNull int Id) {
         service.delete(Id);
         return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
