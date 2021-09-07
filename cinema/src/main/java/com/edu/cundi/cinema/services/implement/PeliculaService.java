@@ -1,5 +1,7 @@
 package com.edu.cundi.cinema.services.implement;
 
+import java.util.Objects;
+
 import com.edu.cundi.cinema.DTOs.PeliculasDTO;
 import com.edu.cundi.cinema.DTOs.RespuestaDTO;
 import com.edu.cundi.cinema.entity.Pelicula;
@@ -22,14 +24,19 @@ public class PeliculaService implements ICRUD<Pelicula> {
 
     @Override
     public RespuestaDTO getById(Integer Id) {
-        // TODO Auto-generated method stub
-        return null;
+        for (Pelicula pelicula : PeliculasDTO.listapeliculas) {
+            if (Objects.equals(pelicula.getId(), Id)) {
+                respuesta.setData(pelicula);
+            }
+        }
+        return respuesta;
     }
 
     @Override
     public RespuestaDTO create(Pelicula entidad) {
-        // TODO Auto-generated method stub
-        return null;
+        PeliculasDTO.listapeliculas.add(entidad);
+        respuesta.setMensaje("creado.");
+        return respuesta;
     }
 
     @Override
