@@ -9,9 +9,11 @@ import com.edu.cundi.cinema.entity.Autor;
 import com.edu.cundi.cinema.entity.Pelicula;
 import com.edu.cundi.cinema.services.interfaces.ICRUD;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
+@Qualifier("AutorService")
 public class AutorService implements ICRUD<Autor> {
     private RespuestaDTO respuesta = new RespuestaDTO();
 
@@ -54,7 +56,6 @@ public class AutorService implements ICRUD<Autor> {
         }
         Pelicula pelicula = encontrado.get(0);
         Autor autor = pelicula.getAutor();
-        respuesta.setMensaje("se ha eliminado");
         respuesta.setData(autor);
         return respuesta;
     }
