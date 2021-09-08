@@ -64,4 +64,10 @@ public class PeliculaService implements ICRUD<Pelicula> {
         return respuesta;
     }
 
+    @Override
+    public RespuestaDTO getByNombre(String nombre) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
