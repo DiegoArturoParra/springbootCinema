@@ -1,7 +1,11 @@
 package com.edu.cundi.cinema.DTOs;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class RespuestaDTO {
+    @ApiModelProperty(notes = "Obtiene un objeto", required = true)
     private Object data;
+    @ApiModelProperty(notes = "Obtiene un mensaje", required = true)
     private String mensaje;
 
     public Object getData() {

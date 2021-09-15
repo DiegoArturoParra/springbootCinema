@@ -1,17 +1,25 @@
 package com.edu.cundi.cinema.entity;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class Autor {
     @NotBlank
+    @ApiModelProperty(notes = "Nombre del autor", required = true)
     @Size(min = 4, max = 50)
     private String nombre;
     @NotBlank
+    @ApiModelProperty(notes = "Apellido del autor", required = true)
     @Size(min = 4, max = 50)
     private String apellido;
-    @Min(18)
+    
+    @Min(value = 15, message = "Minimo de años 15")
+    @Max(value = 65, message = "Maximo de años 65")
+    @ApiModelProperty(notes = "Edad del autor",required = true)
     private int edad;
 
     public Autor() {
