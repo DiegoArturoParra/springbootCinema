@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping("/peliculas/")
 @Validated
@@ -45,7 +46,7 @@ public class PeliculaController {
         @ApiResponse(code = 404, message = "Pelicula no encontrada")
     })
     @GetMapping(value = "{Id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RespuestaDTO> getPelicula(@PathVariable @Min(1) @NotNull Integer Id) {
+    public ResponseEntity<RespuestaDTO> getPelicula(@ApiParam(name = "Codigo", value = "Codigo de la pelicula", required = true) @PathVariable @Min(1) @NotNull Integer Id) {
 
         return ResponseEntity.ok(service.getById(Id));
     }
@@ -87,7 +88,7 @@ public class PeliculaController {
         @ApiResponse(code = 400, message = "Url Erronea")
     
     }) 
-    public ResponseEntity<RespuestaDTO> EditarPelicula(@PathVariable @Min(1) @NotNull int id,
+    public ResponseEntity<RespuestaDTO> EditarPelicula(@ApiParam(name = "Codigo", value = "Codigo de la pelicula", required = true) @PathVariable @Min(1) @NotNull int id,
             @Valid @RequestBody Pelicula entity) {
         return ResponseEntity.ok(service.edit(entity));
     }
@@ -100,7 +101,7 @@ public class PeliculaController {
         @ApiResponse(code = 404, message = "Pelicula no encontrada")
     })
     @DeleteMapping(value = "eliminar/{Id}")
-    public ResponseEntity<?> EliminarPelicula(@PathVariable @Min(1) @NotNull int Id) {
+    public ResponseEntity<?> EliminarPelicula(@ApiParam(name = "Codigo", value = "Codigo de la pelicula", required = true) @PathVariable @Min(1) @NotNull int Id) {
         service.delete(Id);
         return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
     }
