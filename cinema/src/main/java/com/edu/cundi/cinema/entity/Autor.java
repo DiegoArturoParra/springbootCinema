@@ -5,9 +5,19 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import io.swagger.annotations.ApiModelProperty;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+@Data
+@Document(collection = "autores")
 public class Autor {
+    @Id
+    private String id;
+    @Field
     @NotBlank
     @ApiModelProperty(notes = "Nombre del autor", required = true)
     @Size(min = 4, max = 50)
@@ -16,43 +26,23 @@ public class Autor {
     @ApiModelProperty(notes = "Apellido del autor", required = true)
     @Size(min = 4, max = 50)
     private String apellido;
-    
-    @Min(value = 15, message = "Minimo de años 15")
+
+    @ApiModelProperty(notes = "cédula del autor", required = true)
+    @Size(min = 8, max = 50)
+    private String cedula;
+
+    @Min(value = 18, message = "Minimo de años 18")
     @Max(value = 65, message = "Maximo de años 65")
-    @ApiModelProperty(notes = "Edad del autor",required = true)
+    @ApiModelProperty(notes = "Edad del autor", required = true)
     private int edad;
 
     public Autor() {
     }
 
-    public Autor(String nombre, String apellido, int edad) {
+    public Autor(String nombre, String apellido, int edad, String cedula) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.edad = edad;
+        this.cedula = cedula;
     }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public int getEdad() {
-        return edad;
-    }
-
-    public void setEdad(int edad) {
-        this.edad = edad;
-    }
-
 }

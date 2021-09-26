@@ -22,28 +22,36 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(ModelNotFoundException.class)
 	public final ResponseEntity<ExceptionWrapper> manejadorModelNotFoundException(ModelNotFoundException e,
-			WebRequest request){
+			WebRequest request) {
 		e.printStackTrace();
-		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.toString(), 
-					e.getMessage(), request.getDescription(false));
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.toString(),
+				e.getMessage(), request.getDescription(false));
 		return new ResponseEntity<ExceptionWrapper>(ew, HttpStatus.NOT_FOUND);
 	}
-	
+
+	@ExceptionHandler(ConflictException.class)
+	public final ResponseEntity<ExceptionWrapper> manejadorConflictException(ConflictException e,
+			WebRequest request) {
+		e.printStackTrace();
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.CONFLICT.value(), HttpStatus.NOT_FOUND.toString(),
+				e.getMessage(), request.getDescription(false));
+		return new ResponseEntity<ExceptionWrapper>(ew, HttpStatus.CONFLICT);
+	}
+
 	@ExceptionHandler(ArithmeticException.class)
 	public final ResponseEntity<ExceptionWrapper> manejadorModelArithmeticException(ArithmeticException e,
-			WebRequest request){
+			WebRequest request) {
 		e.printStackTrace();
-		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.toString(), 
-					"Ha ocurrido un error", request.getDescription(false));
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Ha ocurrido un error", request.getDescription(false));
 		return new ResponseEntity<ExceptionWrapper>(ew, HttpStatus.INTERNAL_SERVER_ERROR);
-	}	
-	
+	}
+
 	@ExceptionHandler(Exception.class)
-	public final ResponseEntity<ExceptionWrapper> manejadorModelException(Exception e,
-			WebRequest request){
+	public final ResponseEntity<ExceptionWrapper> manejadorModelException(Exception e, WebRequest request) {
 		e.printStackTrace();
-		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.toString(), 
-					"Ha ocurrido un error", request.getDescription(false));
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Ha ocurrido un error", request.getDescription(false));
 		return new ResponseEntity<ExceptionWrapper>(ew, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -51,8 +59,8 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ex.printStackTrace();
-		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), HttpStatus.UNSUPPORTED_MEDIA_TYPE.toString(), 
-				ex.getMessage(), request.getDescription(false));
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
+				HttpStatus.UNSUPPORTED_MEDIA_TYPE.toString(), ex.getMessage(), request.getDescription(false));
 		return new ResponseEntity<Object>(ew, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
 	}
 
@@ -61,8 +69,8 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		System.out.println("Entro 2");
 		ex.printStackTrace();
-		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.toString(), 
-				ex.getMessage(), request.getDescription(false));
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				HttpStatus.INTERNAL_SERVER_ERROR.toString(), ex.getMessage(), request.getDescription(false));
 		return new ResponseEntity<Object>(ew, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -70,8 +78,8 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ex.printStackTrace();
-		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.METHOD_NOT_ALLOWED.value(), HttpStatus.METHOD_NOT_ALLOWED.toString(), 
-				ex.getMessage(), request.getDescription(false));
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.METHOD_NOT_ALLOWED.value(),
+				HttpStatus.METHOD_NOT_ALLOWED.toString(), ex.getMessage(), request.getDescription(false));
 		return new ResponseEntity<Object>(ew, HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
@@ -79,23 +87,23 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ex.printStackTrace();
-		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.toString(), 
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.toString(),
 				ex.getMessage(), request.getDescription(false));
-		return new ResponseEntity<Object>(ew, HttpStatus.BAD_REQUEST);	
+		return new ResponseEntity<Object>(ew, HttpStatus.BAD_REQUEST);
 	}
 
-	//Argumentos no validos -- Por averfiguar
+	// Argumentos no validos -- Por averfiguar
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		// TODO Auto-generated method stub
 		ex.printStackTrace();
-		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.toString(), 
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.toString(),
 				ex.getMessage(), request.getDescription(false));
 		return new ResponseEntity<Object>(ew, HttpStatus.BAD_REQUEST);
 	}
 
-	//Por averfiguar
+	// Por averfiguar
 	@Override
 	protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
@@ -108,7 +116,8 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
 		ex.printStackTrace();
-		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.toString(), 
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.toString(),
 				ex.getMessage(), request.getDescription(false));
 		return new ResponseEntity<Object>(ew, HttpStatus.NOT_FOUND);
-	}	}	
+	}
+}
