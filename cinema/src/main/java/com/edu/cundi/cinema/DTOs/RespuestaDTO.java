@@ -1,7 +1,5 @@
 package com.edu.cundi.cinema.DTOs;
 
-import com.edu.cundi.cinema.entity.Autor;
-
 import io.swagger.annotations.ApiModelProperty;
 
 public class RespuestaDTO {

@@ -1,9 +1,16 @@
 package com.edu.cundi.cinema.exception;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -30,10 +37,9 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(ConflictException.class)
-	public final ResponseEntity<ExceptionWrapper> manejadorConflictException(ConflictException e,
-			WebRequest request) {
+	public final ResponseEntity<ExceptionWrapper> manejadorConflictException(ConflictException e, WebRequest request) {
 		e.printStackTrace();
-		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.CONFLICT.value(), HttpStatus.NOT_FOUND.toString(),
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT.toString(),
 				e.getMessage(), request.getDescription(false));
 		return new ResponseEntity<ExceptionWrapper>(ew, HttpStatus.CONFLICT);
 	}
@@ -96,10 +102,13 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		// TODO Auto-generated method stub
+		List<String> details = new ArrayList<>();
+		for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+			details.add(error.getField() + ": " + error.getDefaultMessage());
+		}
 		ex.printStackTrace();
 		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.toString(),
-				ex.getMessage(), request.getDescription(false));
+				"Validation failed", request.getDescription(false), details);
 		return new ResponseEntity<Object>(ew, HttpStatus.BAD_REQUEST);
 	}
 
@@ -107,9 +116,10 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
-		System.out.println("Entro 3");
-		// TODO Auto-generated method stub
-		return super.handleMissingPathVariable(ex, headers, status, request);
+		ex.printStackTrace();
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.toString(),
+				ex.getMessage(), request.getDescription(false));
+		return new ResponseEntity<Object>(ew, HttpStatus.BAD_REQUEST);
 	}
 
 	@Override

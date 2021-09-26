@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IAutorRepository extends MongoRepository<Autor, String> {
     @Query("{ 'cedula' : ?0 }")
-    Optional<Autor> getCedula(String cedula);
+    Optional<Autor> getAutorByCedula(String cedula);
 }

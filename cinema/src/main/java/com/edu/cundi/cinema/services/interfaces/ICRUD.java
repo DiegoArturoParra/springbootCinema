@@ -11,9 +11,9 @@ public interface ICRUD<T> {
 
     public RespuestaDTO getByNombre(String nombre);
 
-    public RespuestaDTO create(T entidad) throws ConflictException;
+    public RespuestaDTO create(T entidad) throws ConflictException, ModelNotFoundException;
 
-    public RespuestaDTO edit(T entidad) throws ConflictException;;
+    public RespuestaDTO edit(T entidad) throws ConflictException, ModelNotFoundException;
 
     public RespuestaDTO delete(String Id) throws ModelNotFoundException;
 }

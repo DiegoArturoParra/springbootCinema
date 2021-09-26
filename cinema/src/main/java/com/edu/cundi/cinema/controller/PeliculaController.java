@@ -64,26 +64,26 @@ public class PeliculaController {
 
         @ApiOperation(value = "Crear Pelicula")
         @PostMapping(value = "crear", consumes = MediaType.APPLICATION_JSON_VALUE)
-        @ApiResponses(value = { @ApiResponse(code = 200, message = "Pelicula Creada"),
+        @ApiResponses(value = { @ApiResponse(code = 201, message = "Pelicula Creada"),
                         @ApiResponse(code = 415, message = "Formato no valido")
 
         })
-        public ResponseEntity<?> CrearPelicula(@Valid @RequestBody Pelicula entity) throws ConflictException {
+        public ResponseEntity<?> CrearPelicula(@Valid @RequestBody Pelicula entity) throws ConflictException, ModelNotFoundException {
                 service.create(entity);
-                URI location = URI.create(String.format("/peliculas/%d", entity));
+                URI location = URI.create(String.format("/peliculas/%s", entity.getId()));
                 return ResponseEntity.created(location).build();
         }
 
         @ApiOperation(value = "Editar una pelicula")
-        @PutMapping(value = "editar/{id}")
+        @PutMapping(value = "editar")
         @ApiResponses(value = { @ApiResponse(code = 200, message = "Pelicula Editada"),
                         @ApiResponse(code = 415, message = "Formato no valido"),
                         @ApiResponse(code = 404, message = "Pelicula no encontrada"),
                         @ApiResponse(code = 400, message = "Url Erronea")
 
         })
-        public ResponseEntity<RespuestaDTO> EditarPelicula(@Valid @RequestBody Pelicula entity) throws ConflictException {
-                return ResponseEntity.ok(service.edit(entity));
+        public ResponseEntity<String> EditarPelicula(@Valid @RequestBody Pelicula entity) throws ConflictException, ModelNotFoundException {
+                return ResponseEntity.ok(service.edit(entity).getMensaje());
         }
 
         @ApiOperation(value = "Eliminar Pelicula")

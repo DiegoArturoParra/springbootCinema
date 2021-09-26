@@ -12,6 +12,7 @@ import com.edu.cundi.cinema.exception.ConflictException;
 import com.edu.cundi.cinema.exception.ModelNotFoundException;
 import com.edu.cundi.cinema.repository.IAutorRepository;
 import com.edu.cundi.cinema.services.interfaces.ICRUD;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,13 +38,17 @@ public class AutorService implements ICRUD<Autor> {
         return respuesta;
     }
 
-    @Override
-    public RespuestaDTO getById(String Id) throws ModelNotFoundException {
+    private Autor getAutorById(String Id) throws ModelNotFoundException {
         Optional<Autor> autor = _autorRepository.findById(Id);
         if (!autor.isPresent()) {
             throw new ModelNotFoundException("Este autor no existe.");
         }
-        respuesta.setData(autor.get());
+        return autor.get();
+    }
+
+    @Override
+    public RespuestaDTO getById(String Id) throws ModelNotFoundException {
+        respuesta.setData(getAutorById(Id));
         respuesta.setMensaje("encontrado");
         return respuesta;
     }
@@ -57,7 +62,7 @@ public class AutorService implements ICRUD<Autor> {
     }
 
     public void existeCedula(Autor autor, boolean editOrCreate) throws ConflictException {
-        Optional<Autor> existe = _autorRepository.getCedula(autor.getCedula());
+        Optional<Autor> existe = _autorRepository.getAutorByCedula(autor.getCedula());
         if (existe.isPresent()) {
             throw new ConflictException("La cedula ya existe digite otra.");
         }
@@ -69,7 +74,8 @@ public class AutorService implements ICRUD<Autor> {
     }
 
     @Override
-    public RespuestaDTO edit(Autor entidad) throws ConflictException {
+    public RespuestaDTO edit(Autor entidad) throws ConflictException, ModelNotFoundException {
+        getById(entidad.getId());
         existeCedula(entidad, true);
         _autorRepository.save(entidad);
         respuesta.setMensaje("editado");
@@ -78,21 +84,15 @@ public class AutorService implements ICRUD<Autor> {
 
     @Override
     public RespuestaDTO getByNombre(String nombre) {
-        List<Pelicula> encontrado = PeliculasDTO.listapeliculas.stream()
-                .filter(x -> nombre.equals(x.getAutor().getNombre())).collect(Collectors.toList());
-        if (encontrado.isEmpty()) {
-            return null;
-        }
-        Pelicula pelicula = encontrado.get(0);
-        Autor autor = pelicula.getAutor();
-        respuesta.setData(autor);
         return respuesta;
     }
 
     @Override
-    public RespuestaDTO delete(String Id) {
-        // TODO Auto-generated method stub
-        return null;
+    public RespuestaDTO delete(String Id) throws ModelNotFoundException {
+        getAutorById(Id);
+        _autorRepository.deleteById(Id);
+        respuesta.setMensaje("se ha eliminado.");
+        return respuesta;
     }
 
 }
