@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.edu.cundi.cinema.DTOs.AutorDTO;
-import com.edu.cundi.cinema.DTOs.PeliculasDTO;
 import com.edu.cundi.cinema.entity.Autor;
 import com.edu.cundi.cinema.entity.Pelicula;
 import com.edu.cundi.cinema.repository.IAutorRepository;

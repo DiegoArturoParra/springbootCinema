@@ -2,17 +2,13 @@ package com.edu.cundi.cinema.services.implement;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import com.edu.cundi.cinema.DTOs.PeliculasDTO;
 import com.edu.cundi.cinema.DTOs.RespuestaDTO;
 import com.edu.cundi.cinema.entity.Autor;
-import com.edu.cundi.cinema.entity.Pelicula;
 import com.edu.cundi.cinema.exception.ConflictException;
 import com.edu.cundi.cinema.exception.ModelNotFoundException;
 import com.edu.cundi.cinema.repository.IAutorRepository;
 import com.edu.cundi.cinema.services.interfaces.ICRUD;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
