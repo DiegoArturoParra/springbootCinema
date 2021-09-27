@@ -32,7 +32,7 @@ public class Autor {
     private String cedula;
 
     @Min(value = 18, message = "Minimo de años 18")
-    @Max(value = 65, message = "Maximo de años 65")
+    @Max(value = 90, message = "Maximo de años 90")
     @ApiModelProperty(notes = "Edad del autor", required = true)
     private int edad;
 
