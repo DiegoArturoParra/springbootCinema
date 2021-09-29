@@ -1,5 +1,7 @@
 package com.edu.cundi.cinema.entity;
 
+import java.io.Serializable;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -8,13 +10,14 @@ import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.hateoas.RepresentationModel;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
 @Document(collection = "autores")
-public class Autor {
+public class Autor extends RepresentationModel<Autor> implements Serializable {
     @Id
     private String id;
     @Field

@@ -1,6 +1,7 @@
 package com.edu.cundi.cinema.controller;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -29,6 +30,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/autores/")
@@ -44,7 +47,8 @@ public class AutorController {
                         @ApiResponse(code = 403, message = "Está prohibido acceder al recurso al que intentaba acceder"),
                         @ApiResponse(code = 404, message = "Autor No encontrado") })
         @GetMapping(value = "{nombre}", produces = MediaType.APPLICATION_JSON_VALUE)
-        public ResponseEntity<RespuestaDTO> getAutorByNombre(@Valid @PathVariable @Size(min = 4) @NotBlank String nombre) {
+        public ResponseEntity<RespuestaDTO> getAutorByNombre(
+                        @Valid @PathVariable @Size(min = 4) @NotBlank String nombre) {
 
                 return ResponseEntity.ok(service.getByNombre(nombre));
         }
@@ -67,8 +71,15 @@ public class AutorController {
         @GetMapping(value = "listado", produces = MediaType.APPLICATION_JSON_VALUE)
         @ApiResponses(value = { @ApiResponse(code = 200, message = "Autors Encontradas"),
                         @ApiResponse(code = 404, message = "Autors no encontradas") })
-        public ResponseEntity<RespuestaDTO> getAutors() {
-                return ResponseEntity.ok(service.getAll());
+        public ResponseEntity<RespuestaDTO> getAutors() throws ModelNotFoundException {
+
+                RespuestaDTO respuesta = service.getAll();
+                List<Autor> autores = (List<Autor>) service.getAll().getData();
+                for (Autor autor : autores) {
+                        autor.add(linkTo(methodOn(AutorController.class).getAutor(autor.getId())).withSelfRel());
+                }
+                respuesta.setData(autores);
+                return ResponseEntity.ok(respuesta);
         }
 
         @ApiOperation(value = "Crear Autor")
