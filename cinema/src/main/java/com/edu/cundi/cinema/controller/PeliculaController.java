@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.edu.cundi.cinema.DTOs.RespuestaDTO;
 import com.edu.cundi.cinema.entity.Pelicula;
@@ -41,14 +42,14 @@ public class PeliculaController {
         private ICRUD<Pelicula> service;
 
         @ApiOperation(value = "Busca Una pelicula por id", response = Pelicula.class)
-      
+
         @ApiResponses(value = { @ApiResponse(code = 200, message = "Pelicula Encontrada"),
                         @ApiResponse(code = 401, message = "No tienes autorizacion para ver esta pelicula"),
                         @ApiResponse(code = 403, message = "Está prohibido acceder a esta pelicula"),
                         @ApiResponse(code = 404, message = "Pelicula no encontrada") })
         @GetMapping(value = "{Id}", produces = MediaType.APPLICATION_JSON_VALUE)
         public ResponseEntity<RespuestaDTO> getPelicula(
-                        @ApiParam(name = "Codigo", value = "Codigo de la pelicula", required = true) @PathVariable @NotNull String Id)
+                        @ApiParam(name = "Codigo", value = "Codigo de la pelicula", required = true) @Valid @PathVariable @Size(min = 4) @NotNull String Id)
                         throws ModelNotFoundException {
 
                 return ResponseEntity.ok(service.getById(Id));
@@ -68,7 +69,8 @@ public class PeliculaController {
                         @ApiResponse(code = 415, message = "Formato no valido")
 
         })
-        public ResponseEntity<?> CrearPelicula(@Valid @RequestBody Pelicula entity) throws ConflictException, ModelNotFoundException {
+        public ResponseEntity<?> CrearPelicula(@Valid @RequestBody Pelicula entity)
+                        throws ConflictException, ModelNotFoundException {
                 service.create(entity);
                 URI location = URI.create(String.format("/peliculas/%s", entity.getId()));
                 return ResponseEntity.created(location).build();
@@ -82,7 +84,8 @@ public class PeliculaController {
                         @ApiResponse(code = 400, message = "Url Erronea")
 
         })
-        public ResponseEntity<String> EditarPelicula(@Valid @RequestBody Pelicula entity) throws ConflictException, ModelNotFoundException {
+        public ResponseEntity<String> EditarPelicula(@Valid @RequestBody Pelicula entity)
+                        throws ConflictException, ModelNotFoundException {
                 return ResponseEntity.ok(service.edit(entity).getMensaje());
         }
 
@@ -91,7 +94,7 @@ public class PeliculaController {
                         @ApiResponse(code = 404, message = "Pelicula no encontrada") })
         @DeleteMapping(value = "eliminar/{Id}")
         public ResponseEntity<?> EliminarPelicula(
-                        @ApiParam(name = "Codigo", value = "Codigo de la pelicula", required = true) @PathVariable @NotNull String Id)
+                        @Valid @ApiParam(name = "Codigo", value = "Codigo de la pelicula", required = true) @PathVariable @Size(min = 4) @NotNull String Id)
                         throws ModelNotFoundException {
                 service.delete(Id);
                 return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);

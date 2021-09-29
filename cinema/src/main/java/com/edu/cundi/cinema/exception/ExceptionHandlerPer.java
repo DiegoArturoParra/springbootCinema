@@ -3,10 +3,14 @@ package com.edu.cundi.cinema.exception;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -50,12 +54,33 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<ExceptionWrapper>(ew, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler(Exception.class)
-	public final ResponseEntity<ExceptionWrapper> manejadorModelException(Exception e, WebRequest request) {
-		e.printStackTrace();
+	@ExceptionHandler({ Exception.class })
+	public final ResponseEntity<ExceptionWrapper> manejadorModelException(Exception ex, WebRequest request) {
+		ex.printStackTrace();
 		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Ha ocurrido un error", request.getDescription(false));
 		return new ResponseEntity<ExceptionWrapper>(ew, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler({ ConstraintViolationException.class })
+	public final ResponseEntity<ExceptionWrapper> ConstraintException(ConstraintViolationException ex,
+			WebRequest request) {
+		ex.printStackTrace();
+		List<String> details = new ArrayList<>();
+		details = PrepareMessage(ex);
+		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.toString(),
+				"Validaciones fallidas.", request.getDescription(false), details);
+		return new ResponseEntity<ExceptionWrapper>(ew, HttpStatus.BAD_REQUEST);
+	}
+
+	private List<String> PrepareMessage(ConstraintViolationException ex) {
+		List<String> erroresAnotaciones = new ArrayList<>();
+		int loop = 1;
+		for (ConstraintViolation<?> Cv : ex.getConstraintViolations()) {
+			erroresAnotaciones.add(loop + ". " + Cv.getPropertyPath() + ": " + Cv.getMessage());
+			loop++;
+		}
+		return erroresAnotaciones;
 	}
 
 	@Override
@@ -105,7 +130,7 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 		}
 		ex.printStackTrace();
 		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.toString(),
-				"Validation failed", request.getDescription(false), details);
+				"Validaciones fallidas.", request.getDescription(false), details);
 		return new ResponseEntity<Object>(ew, HttpStatus.BAD_REQUEST);
 	}
 
@@ -113,6 +138,7 @@ public class ExceptionHandlerPer extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
+
 		ex.printStackTrace();
 		ExceptionWrapper ew = new ExceptionWrapper(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.toString(),
 				ex.getMessage(), request.getDescription(false));

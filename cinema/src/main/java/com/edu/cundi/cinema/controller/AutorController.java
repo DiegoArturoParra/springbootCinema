@@ -44,7 +44,7 @@ public class AutorController {
                         @ApiResponse(code = 403, message = "Está prohibido acceder al recurso al que intentaba acceder"),
                         @ApiResponse(code = 404, message = "Autor No encontrado") })
         @GetMapping(value = "{nombre}", produces = MediaType.APPLICATION_JSON_VALUE)
-        public ResponseEntity<RespuestaDTO> getAutorByNombre(@PathVariable @Size(min = 4) @NotBlank String nombre) {
+        public ResponseEntity<RespuestaDTO> getAutorByNombre(@Valid @PathVariable @Size(min = 4) @NotBlank String nombre) {
 
                 return ResponseEntity.ok(service.getByNombre(nombre));
         }
@@ -57,7 +57,7 @@ public class AutorController {
                         @ApiResponse(code = 404, message = "Autor no encontrada") })
         @GetMapping(value = "buscar/{Id}", produces = MediaType.APPLICATION_JSON_VALUE)
         public ResponseEntity<RespuestaDTO> getAutor(
-                        @ApiParam(name = "Codigo", value = "Codigo de la Autor", required = true) @PathVariable @NotNull String Id)
+                        @ApiParam(name = "Codigo", value = "Codigo de la Autor", required = true) @Valid @PathVariable @NotNull @Size(min = 5) String Id)
                         throws ModelNotFoundException {
 
                 return ResponseEntity.ok(service.getById(Id));
@@ -103,7 +103,7 @@ public class AutorController {
                         @ApiResponse(code = 404, message = "Autor no encontrada") })
         @DeleteMapping(value = "eliminar/{Id}")
         public ResponseEntity<?> EliminarAutor(
-                        @ApiParam(name = "Codigo", value = "Codigo de la Autor", required = true) @PathVariable @NotNull String Id)
+                        @ApiParam(name = "Codigo", value = "Codigo de la Autor", required = true) @Valid @PathVariable @Size(min = 4) @NotNull String Id)
                         throws ModelNotFoundException {
                 service.delete(Id);
                 return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
