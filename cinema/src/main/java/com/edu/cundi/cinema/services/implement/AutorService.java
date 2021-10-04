@@ -52,8 +52,9 @@ public class AutorService implements ICRUD<Autor> {
     @Override
     public RespuestaDTO create(Autor entidad) throws ConflictException {
         existeCedula(entidad, false);
-        _autorRepository.insert(entidad);
+        Autor autor = _autorRepository.insert(entidad);
         respuesta.setMensaje("creado");
+        respuesta.setData(autor);
         return respuesta;
     }
 
@@ -73,8 +74,9 @@ public class AutorService implements ICRUD<Autor> {
     public RespuestaDTO edit(Autor entidad) throws ConflictException, ModelNotFoundException {
         getById(entidad.getId());
         existeCedula(entidad, true);
-        _autorRepository.save(entidad);
+        Autor autor = _autorRepository.save(entidad);
         respuesta.setMensaje("editado");
+        respuesta.setData(autor);
         return respuesta;
     }
 
