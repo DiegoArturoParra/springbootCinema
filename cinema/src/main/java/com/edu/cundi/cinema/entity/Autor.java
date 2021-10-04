@@ -39,13 +39,12 @@ public class Autor extends RepresentationModel<Autor> {
     @ApiModelProperty(notes = "Edad del autor", required = true)
     private int edad;
 
-    public Autor() {
-    }
-
+  
     public Autor(String nombre, String apellido, int edad, String cedula) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.edad = edad;
         this.cedula = cedula;
     }
+
 }

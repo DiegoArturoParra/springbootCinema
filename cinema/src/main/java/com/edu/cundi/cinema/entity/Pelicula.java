@@ -18,7 +18,7 @@ import lombok.Data;
 
 @Data
 @Document(collection = "peliculas")
-public class Pelicula extends RepresentationModel<Autor> {
+public class Pelicula extends RepresentationModel<Pelicula> {
     @Id
     private String id;
     @NotBlank
