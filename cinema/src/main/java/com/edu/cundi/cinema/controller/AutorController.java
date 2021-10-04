@@ -91,8 +91,10 @@ public class AutorController {
         public ResponseEntity<RespuestaDTO> CrearAutor(@Valid @RequestBody Autor entity)
                         throws ConflictException, ModelNotFoundException {
                 RespuestaDTO response = service.create(entity);
-                URI location = URI.create(String.format("/autores/%s", entity.getId()));
-                response.setData(location);
+                Autor autor = (Autor) response.getData();
+                autor.add(linkTo(methodOn(AutorController.class).getAutor(autor.getId())).withSelfRel());
+                autor.add(linkTo(methodOn(AutorController.class).getAutors()).withSelfRel());
+                response.setData(autor);
                 return new ResponseEntity<RespuestaDTO>(response, HttpStatus.CREATED);
         }
 
@@ -106,6 +108,11 @@ public class AutorController {
         })
         public ResponseEntity<String> EditarAutor(@Valid @RequestBody Autor entity)
                         throws ConflictException, ModelNotFoundException {
+                RespuestaDTO response = service.edit(entity);
+                Autor autor = (Autor) response.getData();
+                autor.add(linkTo(methodOn(AutorController.class).getAutor(autor.getId())).withSelfRel());
+                autor.add(linkTo(methodOn(AutorController.class).getAutors()).withSelfRel());
+                response.setData(autor);
                 return ResponseEntity.ok(service.edit(entity).getMensaje());
         }
 
