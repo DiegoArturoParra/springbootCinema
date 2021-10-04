@@ -1,6 +1,7 @@
 package com.edu.cundi.cinema.controller;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -31,6 +32,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/peliculas/")
@@ -59,8 +62,16 @@ public class PeliculaController {
         @GetMapping(value = "listado", produces = MediaType.APPLICATION_JSON_VALUE)
         @ApiResponses(value = { @ApiResponse(code = 200, message = "Peliculas Encontradas"),
                         @ApiResponse(code = 404, message = "Peliculas no encontradas") })
-        public ResponseEntity<RespuestaDTO> getPeliculas() {
-                return ResponseEntity.ok(service.getAll());
+        public ResponseEntity<RespuestaDTO> getPeliculas() throws ModelNotFoundException {
+                RespuestaDTO respuesta = service.getAll();
+                List<Pelicula> peliculas = (List<Pelicula>) service.getAll().getData();
+                for (Pelicula pelicula : peliculas) {
+                        pelicula.add(linkTo(methodOn(AutorController.class).getAutor(pelicula.getAutor().getId()))
+                                        .withRel("Autor de la pelicula"));
+                        pelicula.add(linkTo(methodOn(PeliculaController.class).getPelicula(pelicula.getId()))
+                                        .withRel("Pelicula"));
+                }
+                return ResponseEntity.ok(respuesta);
         }
 
         @ApiOperation(value = "Crear Pelicula")

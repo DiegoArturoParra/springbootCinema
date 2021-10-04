@@ -1,6 +1,4 @@
 package com.edu.cundi.cinema.controller;
-
-import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -76,7 +74,7 @@ public class AutorController {
                 RespuestaDTO respuesta = service.getAll();
                 List<Autor> autores = (List<Autor>) service.getAll().getData();
                 for (Autor autor : autores) {
-                        autor.add(linkTo(methodOn(AutorController.class).getAutor(autor.getId())).withSelfRel());
+                        autor.add(linkTo(methodOn(AutorController.class).getAutor(autor.getId())).withRel("Autor"));
                 }
                 respuesta.setData(autores);
                 return ResponseEntity.ok(respuesta);
@@ -92,8 +90,8 @@ public class AutorController {
                         throws ConflictException, ModelNotFoundException {
                 RespuestaDTO response = service.create(entity);
                 Autor autor = (Autor) response.getData();
-                autor.add(linkTo(methodOn(AutorController.class).getAutor(autor.getId())).withSelfRel());
-                autor.add(linkTo(methodOn(AutorController.class).getAutors()).withSelfRel());
+                autor.add(linkTo(methodOn(AutorController.class).getAutor(autor.getId())).withRel("Autor"));
+                autor.add(linkTo(methodOn(AutorController.class).getAutors()).withRel("lista autores"));
                 response.setData(autor);
                 return new ResponseEntity<RespuestaDTO>(response, HttpStatus.CREATED);
         }

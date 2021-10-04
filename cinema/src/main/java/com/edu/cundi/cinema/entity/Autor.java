@@ -17,7 +17,7 @@ import lombok.Data;
 
 @Data
 @Document(collection = "autores")
-public class Autor extends RepresentationModel<Autor> implements Serializable {
+public class Autor extends RepresentationModel<Autor> {
     @Id
     private String id;
     @Field

@@ -12,12 +12,13 @@ import com.edu.cundi.cinema.DTOs.AutorDTO;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.hateoas.RepresentationModel;
 
 import lombok.Data;
 
 @Data
 @Document(collection = "peliculas")
-public class Pelicula {
+public class Pelicula extends RepresentationModel<Autor> {
     @Id
     private String id;
     @NotBlank
