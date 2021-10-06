@@ -44,7 +44,7 @@ public class AutorController {
                         @ApiResponse(code = 401, message = "No tienes autorizacion para ver este autor"),
                         @ApiResponse(code = 403, message = "Está prohibido acceder al recurso al que intentaba acceder"),
                         @ApiResponse(code = 404, message = "Autor No encontrado") })
-        @GetMapping(value = "{nombre}", produces = MediaType.APPLICATION_JSON_VALUE)
+        @GetMapping(value = "{buscarByNombre/{nombre}}", produces = MediaType.APPLICATION_JSON_VALUE)
         public ResponseEntity<RespuestaDTO> getAutorByNombre(
                         @Valid @PathVariable @Size(min = 4) @NotBlank String nombre) {
 
