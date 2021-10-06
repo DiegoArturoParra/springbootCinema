@@ -89,7 +89,7 @@ public class PeliculaController {
         @ApiOperation(value = "Eliminar Pelicula")
         @ApiResponses(value = { @ApiResponse(code = 204, message = "Pelicula Editada"),
                         @ApiResponse(code = 404, message = "Pelicula no encontrada") })
-        @DeleteMapping(value = "eliminar/{Id}")
+        @DeleteMapping(value = "{Id}")
         public ResponseEntity<?> EliminarPelicula(
                         @Valid @ApiParam(name = "Codigo", value = "Codigo de la pelicula", required = true) @PathVariable @Size(min = 4) @NotNull String Id)
                         throws ModelNotFoundException {

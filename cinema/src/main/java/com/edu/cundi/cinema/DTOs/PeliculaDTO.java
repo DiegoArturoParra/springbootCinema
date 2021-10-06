@@ -14,5 +14,4 @@ public class PeliculaDTO extends RepresentationModel<PeliculaDTO>  {
     private AutorIdModel autor;
     private LocalDate fechaDeSalida;
     private String reseñaDePelicula;
-
 }

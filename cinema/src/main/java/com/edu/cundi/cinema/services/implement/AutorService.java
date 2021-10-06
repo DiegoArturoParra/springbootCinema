@@ -69,6 +69,7 @@ public class AutorService implements ICRUD<Autor> {
         existeCedula(entidad, false);
         Autor autor = _autorRepository.insert(entidad);
         AutorIdModel autorDto = new AutorIdModel();
+        autorDto.setId(autor.getId());
         autorDto.add(LinkAutor(autor.getId()));
         respuesta.setMensaje("creado");
         respuesta.setData(autorDto);
@@ -81,7 +82,7 @@ public class AutorService implements ICRUD<Autor> {
 
     public void existeCedula(Autor autor, boolean editOrCreate) throws ConflictException {
         Optional<Autor> existe = _autorRepository.getAutorByCedula(autor.getCedula());
-        if (existe.isPresent()) {
+        if (_autorRepository.existsByCedula(autor.getCedula())) {
             throw new ConflictException("La cedula ya existe digite otra.");
         }
         if (editOrCreate) {

@@ -57,7 +57,7 @@ public class AutorController {
                         @ApiResponse(code = 401, message = "No tienes autorizacion para ver esta Autor"),
                         @ApiResponse(code = 403, message = "Está prohibido acceder a esta Autor"),
                         @ApiResponse(code = 404, message = "Autor no encontrada") })
-        @GetMapping(value = "buscar/{Id}", produces = MediaType.APPLICATION_JSON_VALUE)
+        @GetMapping(value = "{Id}", produces = MediaType.APPLICATION_JSON_VALUE)
         public ResponseEntity<RespuestaDTO> getAutor(
                         @ApiParam(name = "Codigo", value = "Codigo de la Autor", required = true) @PathVariable @NotNull @Size(min = 5) String Id)
                         throws ModelNotFoundException {
@@ -101,7 +101,7 @@ public class AutorController {
         @ApiOperation(value = "Eliminar autor")
         @ApiResponses(value = { @ApiResponse(code = 204, message = "Autor Editada"),
                         @ApiResponse(code = 404, message = "Autor no encontrada") })
-        @DeleteMapping(value = "eliminar/{Id}")
+        @DeleteMapping(value = "{Id}")
         public ResponseEntity<?> EliminarAutor(
                         @ApiParam(name = "Codigo", value = "Codigo de la Autor", required = true) @Valid @PathVariable @Size(min = 4) @NotNull String Id)
                         throws ModelNotFoundException {
