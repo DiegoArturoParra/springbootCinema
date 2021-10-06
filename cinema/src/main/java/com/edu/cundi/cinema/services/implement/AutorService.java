@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.edu.cundi.cinema.DTOs.AutorDTO;
-import com.edu.cundi.cinema.DTOs.AutorIdDTO;
+import com.edu.cundi.cinema.DTOs.AutorIdModel;
 import com.edu.cundi.cinema.DTOs.RespuestaDTO;
 import com.edu.cundi.cinema.controller.AutorController;
 import com.edu.cundi.cinema.entity.Autor;
@@ -12,7 +12,6 @@ import com.edu.cundi.cinema.exception.ConflictException;
 import com.edu.cundi.cinema.exception.ModelNotFoundException;
 import com.edu.cundi.cinema.repository.IAutorRepository;
 import com.edu.cundi.cinema.services.interfaces.ICRUD;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.google.common.reflect.TypeToken;
 
 import org.modelmapper.ModelMapper;
@@ -69,14 +68,14 @@ public class AutorService implements ICRUD<Autor> {
     public RespuestaDTO create(Autor entidad) throws ConflictException, ModelNotFoundException {
         existeCedula(entidad, false);
         Autor autor = _autorRepository.insert(entidad);
-        AutorIdDTO autorDto = new AutorIdDTO();
+        AutorIdModel autorDto = new AutorIdModel();
         autorDto.add(LinkAutor(autor.getId()));
         respuesta.setMensaje("creado");
         respuesta.setData(autorDto);
         return respuesta;
     }
 
-    private Link LinkAutor(String Id) throws ModelNotFoundException {
+    public Link LinkAutor(String Id) throws ModelNotFoundException {
         return linkTo(methodOn(AutorController.class).getAutor(Id)).withRel("Autor");
     }
 

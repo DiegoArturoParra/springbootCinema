@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
-import com.edu.cundi.cinema.DTOs.AutorDTO;
+import com.edu.cundi.cinema.DTOs.AutorIdDTO;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,14 +25,14 @@ public class Pelicula {
     private String nombre;
     @NotNull
     @Valid
-    private AutorDTO autor;
+    private AutorIdDTO autor;
     @Past
     private LocalDate fechaDeSalida;
     @NotBlank
     @Size(min = 10, max = 500)
     private String reseñaDePelicula;
 
-    public Pelicula(String nombre, AutorDTO autor, LocalDate fechaDeSalida, String reseñaDePelicula) {
+    public Pelicula(String nombre, AutorIdDTO autor, LocalDate fechaDeSalida, String reseñaDePelicula) {
         this.nombre = nombre;
         this.autor = autor;
         this.fechaDeSalida = fechaDeSalida;

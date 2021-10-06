@@ -3,10 +3,11 @@ package com.edu.cundi.cinema.services.implement;
 import java.util.List;
 import java.util.Optional;
 
+import com.edu.cundi.cinema.DTOs.AutorIdModel;
 import com.edu.cundi.cinema.DTOs.PeliculaDTO;
 import com.edu.cundi.cinema.DTOs.RespuestaDTO;
-import com.edu.cundi.cinema.controller.AutorController;
 import com.edu.cundi.cinema.controller.PeliculaController;
+import com.edu.cundi.cinema.entity.Autor;
 import com.edu.cundi.cinema.entity.Pelicula;
 import com.edu.cundi.cinema.exception.ConflictException;
 import com.edu.cundi.cinema.exception.ModelNotFoundException;
@@ -17,6 +18,7 @@ import com.google.common.reflect.TypeToken;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -48,13 +50,16 @@ public class PeliculaService implements ICRUD<Pelicula> {
         }.getType());
 
         for (PeliculaDTO pelicula : peliculasDTOs) {
-            pelicula.getAutor().add(linkTo(methodOn(AutorController.class).getAutor(pelicula.getAutor().getId()))
-                    .withRel("Autor de la pelicula"));
-            pelicula.add(linkTo(methodOn(PeliculaController.class).getPelicula(pelicula.getId())).withRel("Pelicula"));
+            pelicula.getAutor().add(autorService.LinkAutor(pelicula.getAutor().getId()));
+            pelicula.add(LinkPelicula(pelicula.getId()));
         }
 
         respuesta.setData(peliculasDTOs);
         return respuesta;
+    }
+
+    private Link LinkPelicula(String Id) throws ModelNotFoundException {
+        return linkTo(methodOn(PeliculaController.class).getPelicula(Id)).withRel("Pelicula");
     }
 
     private Pelicula getPeliculaById(String Id) throws ModelNotFoundException {
@@ -74,9 +79,17 @@ public class PeliculaService implements ICRUD<Pelicula> {
 
     @Override
     public RespuestaDTO create(Pelicula entidad) throws ConflictException, ModelNotFoundException {
-        autorService.getById(entidad.getAutor().getId()).getData();
-        _PeliculaRepository.insert(entidad);
+        Autor autor = (Autor) autorService.getById(entidad.getAutor().getId()).getData();
+        Pelicula pelicula = _PeliculaRepository.insert(entidad);
+        PeliculaDTO peliculaDTO = (PeliculaDTO) _mapper.map(pelicula, new TypeToken<PeliculaDTO>() {
+        }.getType());
+        peliculaDTO.add(LinkPelicula(pelicula.getId()));
+        AutorIdModel autorid = new AutorIdModel();
+        autorid.setId(autor.getId());
+        peliculaDTO.setAutor(autorid);
+        peliculaDTO.getAutor().add(autorService.LinkAutor(pelicula.getAutor().getId()));
         respuesta.setMensaje("creado.");
+        respuesta.setData(peliculaDTO);
         return respuesta;
     }
 

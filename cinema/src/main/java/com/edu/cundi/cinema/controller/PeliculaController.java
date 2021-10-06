@@ -1,7 +1,5 @@
 package com.edu.cundi.cinema.controller;
 
-import java.net.URI;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

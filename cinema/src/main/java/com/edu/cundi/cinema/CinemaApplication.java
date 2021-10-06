@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.edu.cundi.cinema.DTOs.AutorDTO;
+import com.edu.cundi.cinema.DTOs.AutorIdDTO;
 import com.edu.cundi.cinema.entity.Autor;
 import com.edu.cundi.cinema.entity.Pelicula;
 import com.edu.cundi.cinema.repository.IAutorRepository;
@@ -41,7 +41,7 @@ public class CinemaApplication implements CommandLineRunner {
 		Optional<Autor> autor = _autorRepository.getAutorByCedula(autorTerminator.getCedula());
 		if (autor.isPresent()) {
 			if (_peliculaRepository.findAll().isEmpty()) {
-				AutorDTO autorId = new AutorDTO(autor.get().getId());
+				AutorIdDTO autorId  = new AutorIdDTO(autor.get().getId());
 				listapeliculas.add(new Pelicula("The Terminator", autorId, LocalDate.of(1984, Month.OCTOBER, 20),
 				"En el año 2029, después de devastar la Tierra y esclavizar a la humanidad, las máquinas,"
 						+ "gobernadas por la inteligencia artificial conocida como Skynet, están a punto de"

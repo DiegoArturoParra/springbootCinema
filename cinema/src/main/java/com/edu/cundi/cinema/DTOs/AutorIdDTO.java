@@ -1,13 +1,13 @@
 package com.edu.cundi.cinema.DTOs;
 
-import javax.validation.constraints.NotBlank;
-
-import org.springframework.hateoas.RepresentationModel;
-
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class AutorIdDTO extends RepresentationModel<AutorDTO> {
-    @NotBlank(message = "el id no puede estar vacio.")
+@NoArgsConstructor
+public class AutorIdDTO  {
     private String id;
+    public AutorIdDTO(String id) {
+        this.id = id;
+    }
 }

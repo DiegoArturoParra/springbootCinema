@@ -11,8 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @Document(collection = "autores")
 public class Autor {
     @Id
@@ -36,8 +38,11 @@ public class Autor {
     @ApiModelProperty(notes = "Edad del autor", required = true)
     private int edad;
 
-    public Autor() {
+    
+    public Autor(String id) {
+        this.id = id;
     }
+
 
     public Autor(String nombre, String apellido, int edad, String cedula) {
         this.nombre = nombre;
