@@ -1,26 +1,10 @@
 package com.edu.cundi.cinema.services.implement;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.security.auth.message.callback.PrivateKeyCallback.Request;
-
-import com.google.common.reflect.TypeToken;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.Link;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.List;
+import java.util.Optional;
 
 import com.edu.cundi.cinema.DTOs.AutorDTO;
 import com.edu.cundi.cinema.DTOs.AutorIdModel;
@@ -32,6 +16,15 @@ import com.edu.cundi.cinema.exception.ConflictException;
 import com.edu.cundi.cinema.exception.ModelNotFoundException;
 import com.edu.cundi.cinema.repository.IAutorRepository;
 import com.edu.cundi.cinema.services.interfaces.IAutorService;
+import com.google.common.reflect.TypeToken;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Link;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AutorService implements IAutorService {
@@ -59,7 +52,7 @@ public class AutorService implements IAutorService {
         return respuesta;
     }
 
-    private Autor getAutorById(Integer Id) throws ModelNotFoundException {
+    public Autor getAutorById(Integer Id) throws ModelNotFoundException {
         Optional<Autor> autor = _autorRepository.findById(Id);
         if (!autor.isPresent()) {
             throw new ModelNotFoundException("Este autor no existe.");

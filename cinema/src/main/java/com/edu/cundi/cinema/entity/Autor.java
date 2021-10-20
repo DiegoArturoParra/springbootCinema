@@ -31,6 +31,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "autor", schema = "libros")
 public class Autor {
     @Id
+    @ApiModelProperty(notes = "Unique identificador del autor.", example = "1", position = 0)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
