@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -41,6 +42,7 @@ public class Libro {
     private String descripcion;
 
     @NotNull(message = "numero de paginas obligatorio")
+    @Min(value = 15, message = "Minimo de paginas 15")
     @Column(name = "numero_paginas", nullable = false)
     private Integer numeroPaginas;
     @Past
