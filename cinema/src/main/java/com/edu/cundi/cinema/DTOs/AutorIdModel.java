@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AutorIdModel extends RepresentationModel<AutorIdModel> {
     @NotBlank(message = "el id no puede estar vacio.")
-    private String id;
+    private Integer id;
     
 }

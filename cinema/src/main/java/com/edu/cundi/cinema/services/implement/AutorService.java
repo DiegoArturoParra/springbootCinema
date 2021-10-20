@@ -3,6 +3,21 @@ package com.edu.cundi.cinema.services.implement;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.reflect.TypeToken;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.Link;
+import org.springframework.stereotype.Service;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.edu.cundi.cinema.DTOs.AutorDTO;
 import com.edu.cundi.cinema.DTOs.AutorIdModel;
 import com.edu.cundi.cinema.DTOs.RespuestaDTO;
@@ -12,16 +27,6 @@ import com.edu.cundi.cinema.exception.ConflictException;
 import com.edu.cundi.cinema.exception.ModelNotFoundException;
 import com.edu.cundi.cinema.repository.IAutorRepository;
 import com.edu.cundi.cinema.services.interfaces.ICRUD;
-import com.google.common.reflect.TypeToken;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.hateoas.Link;
-import org.springframework.stereotype.Service;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @Service
 @Qualifier("AutorService")
 public class AutorService implements ICRUD<Autor> {
@@ -49,7 +54,7 @@ public class AutorService implements ICRUD<Autor> {
         return respuesta;
     }
 
-    private Autor getAutorById(String Id) throws ModelNotFoundException {
+    private Autor getAutorById(Integer Id) throws ModelNotFoundException {
         Optional<Autor> autor = _autorRepository.findById(Id);
         if (!autor.isPresent()) {
             throw new ModelNotFoundException("Este autor no existe.");
@@ -58,7 +63,7 @@ public class AutorService implements ICRUD<Autor> {
     }
 
     @Override
-    public RespuestaDTO getById(String Id) throws ModelNotFoundException {
+    public RespuestaDTO getById(Integer Id) throws ModelNotFoundException {
         respuesta.setData(getAutorById(Id));
         respuesta.setMensaje("encontrado");
         return respuesta;
@@ -67,7 +72,7 @@ public class AutorService implements ICRUD<Autor> {
     @Override
     public RespuestaDTO create(Autor entidad) throws ConflictException, ModelNotFoundException {
         existeCedula(entidad, false);
-        Autor autor = _autorRepository.insert(entidad);
+        Autor autor = _autorRepository.save(entidad);
         AutorIdModel autorDto = new AutorIdModel();
         autorDto.setId(autor.getId());
         autorDto.add(LinkAutor(autor.getId()));
@@ -76,12 +81,12 @@ public class AutorService implements ICRUD<Autor> {
         return respuesta;
     }
 
-    public Link LinkAutor(String Id) throws ModelNotFoundException {
+    public Link LinkAutor(Integer Id) throws ModelNotFoundException {
         return linkTo(methodOn(AutorController.class).getAutor(Id)).withRel("Autor");
     }
 
     public void existeCedula(Autor autor, boolean editOrCreate) throws ConflictException {
-        Optional<Autor> existe = _autorRepository.getAutorByCedula(autor.getCedula());
+        Optional<Autor> existe = _autorRepository.findByCedula(autor.getCedula());
         if (_autorRepository.existsByCedula(autor.getCedula())) {
             throw new ConflictException("La cedula ya existe digite otra.");
         }
@@ -107,11 +112,16 @@ public class AutorService implements ICRUD<Autor> {
     }
 
     @Override
-    public RespuestaDTO delete(String Id) throws ModelNotFoundException {
+    public RespuestaDTO delete(Integer Id) throws ModelNotFoundException {
         getAutorById(Id);
         _autorRepository.deleteById(Id);
         respuesta.setMensaje("se ha eliminado.");
         return respuesta;
     }
 
+    @Override
+    public Page<Autor> getPaginado(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC));
+        return _autorRepository.findAll(pageable);
+    }
 }

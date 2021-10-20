@@ -1,6 +1,7 @@
 package com.edu.cundi.cinema.controller;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -13,6 +14,7 @@ import com.edu.cundi.cinema.services.interfaces.ICRUD;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +61,7 @@ public class AutorController {
                         @ApiResponse(code = 404, message = "Autor no encontrada") })
         @GetMapping(value = "{Id}", produces = MediaType.APPLICATION_JSON_VALUE)
         public ResponseEntity<RespuestaDTO> getAutor(
-                        @ApiParam(name = "Codigo", value = "Codigo de la Autor", required = true) @PathVariable @NotNull @Size(min = 5) String Id)
+                        @ApiParam(name = "Codigo", value = "Codigo de la Autor", required = true) @PathVariable @Min(1) @NotNull Integer Id)
                         throws ModelNotFoundException {
 
                 return ResponseEntity.ok(service.getById(Id));
@@ -71,6 +73,14 @@ public class AutorController {
                         @ApiResponse(code = 404, message = "Autors no encontradas") })
         public ResponseEntity<RespuestaDTO> getAutores() throws ModelNotFoundException {
                 return ResponseEntity.ok(service.getAll());
+        }
+
+        @ApiOperation(value = "Obtiene paginado de Autores", response = Autor.class)
+        @GetMapping(value = "paginar", produces = MediaType.APPLICATION_JSON_VALUE)
+        @ApiResponses(value = { @ApiResponse(code = 200, message = "Autores Encontradas"),
+                        @ApiResponse(code = 404, message = "Autores no encontradas") })
+        public ResponseEntity<Page<Autor>> getPaginarAutores(@PathVariable int page, @PathVariable int size) {
+                return ResponseEntity.ok(service.getPaginado(page, size));
         }
 
         @ApiOperation(value = "Crear Autor")
@@ -103,7 +113,7 @@ public class AutorController {
                         @ApiResponse(code = 404, message = "Autor no encontrada") })
         @DeleteMapping(value = "{Id}")
         public ResponseEntity<?> EliminarAutor(
-                        @ApiParam(name = "Codigo", value = "Codigo de la Autor", required = true) @Valid @PathVariable @Size(min = 4) @NotNull String Id)
+                        @ApiParam(name = "Codigo", value = "Codigo de la Autor", required = true) @Valid @PathVariable @Min(1) @NotNull Integer Id)
                         throws ModelNotFoundException {
                 service.delete(Id);
                 return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
