@@ -1,7 +1,10 @@
 package com.edu.cundi.cinema.entity;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,10 +43,12 @@ public class Libro {
     @NotNull(message = "numero de paginas obligatorio")
     @Column(name = "numero_paginas", nullable = false)
     private Integer numeroPaginas;
-
-    @ManyToOne
+    @Past
+    @NotNull(message = "fecha de salida obligatorio")
+    @Column(name = "fecha_salida", nullable = false)
+    private LocalDate fechaDeSalida;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "id_autor", nullable = false, foreignKey = @ForeignKey(name = "FK_Autor_Libro"))
     private Autor autor;
-
 }

@@ -17,6 +17,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -56,6 +58,7 @@ public class Autor {
     @Column(name = "edad", nullable = false)
     @ApiModelProperty(notes = "Edad del autor", required = true)
     private int edad;
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "autor", cascade = { CascadeType.ALL }, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Libro> libro;
 

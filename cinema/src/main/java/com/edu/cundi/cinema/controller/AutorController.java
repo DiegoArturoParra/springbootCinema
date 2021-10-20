@@ -6,15 +6,18 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.edu.cundi.cinema.DTOs.PaginarDTO;
 import com.edu.cundi.cinema.DTOs.RespuestaDTO;
 import com.edu.cundi.cinema.entity.Autor;
 import com.edu.cundi.cinema.exception.ConflictException;
 import com.edu.cundi.cinema.exception.ModelNotFoundException;
+import com.edu.cundi.cinema.services.interfaces.IAutorService;
 import com.edu.cundi.cinema.services.interfaces.ICRUD;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
@@ -38,20 +42,8 @@ import io.swagger.annotations.ApiResponses;
 @Validated
 public class AutorController {
         @Autowired
-        @Qualifier("AutorService")
-        private ICRUD<Autor> service;
+        private IAutorService service;
 
-        @ApiOperation(value = "Busca Un autor por su nombre", response = Autor.class)
-        @ApiResponses(value = { @ApiResponse(code = 200, message = "Autor encontrado"),
-                        @ApiResponse(code = 401, message = "No tienes autorizacion para ver este autor"),
-                        @ApiResponse(code = 403, message = "Está prohibido acceder al recurso al que intentaba acceder"),
-                        @ApiResponse(code = 404, message = "Autor No encontrado") })
-        @GetMapping(value = "{buscarByNombre/{nombre}}", produces = MediaType.APPLICATION_JSON_VALUE)
-        public ResponseEntity<RespuestaDTO> getAutorByNombre(
-                        @Valid @PathVariable @Size(min = 4) @NotBlank String nombre) {
-
-                return ResponseEntity.ok(service.getByNombre(nombre));
-        }
 
         @ApiOperation(value = "Busca Una Autor por id", response = Autor.class)
 
@@ -79,8 +71,9 @@ public class AutorController {
         @GetMapping(value = "paginar", produces = MediaType.APPLICATION_JSON_VALUE)
         @ApiResponses(value = { @ApiResponse(code = 200, message = "Autores Encontradas"),
                         @ApiResponse(code = 404, message = "Autores no encontradas") })
-        public ResponseEntity<Page<Autor>> getPaginarAutores(@PathVariable int page, @PathVariable int size) {
-                return ResponseEntity.ok(service.getPaginado(page, size));
+        public ResponseEntity<PaginarDTO> getPaginarAutores(@RequestParam int page, @RequestParam int pageSize) throws ModelNotFoundException {
+
+                return ResponseEntity.ok(service.getPaginado(page,pageSize));
         }
 
         @ApiOperation(value = "Crear Autor")

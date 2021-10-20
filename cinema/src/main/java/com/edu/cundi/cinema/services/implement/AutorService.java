@@ -3,6 +3,8 @@ package com.edu.cundi.cinema.services.implement;
 import java.util.List;
 import java.util.Optional;
 
+import javax.security.auth.message.callback.PrivateKeyCallback.Request;
+
 import com.google.common.reflect.TypeToken;
 
 import org.modelmapper.ModelMapper;
@@ -15,21 +17,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.edu.cundi.cinema.DTOs.AutorDTO;
 import com.edu.cundi.cinema.DTOs.AutorIdModel;
+import com.edu.cundi.cinema.DTOs.PaginarDTO;
 import com.edu.cundi.cinema.DTOs.RespuestaDTO;
 import com.edu.cundi.cinema.controller.AutorController;
 import com.edu.cundi.cinema.entity.Autor;
 import com.edu.cundi.cinema.exception.ConflictException;
 import com.edu.cundi.cinema.exception.ModelNotFoundException;
 import com.edu.cundi.cinema.repository.IAutorRepository;
-import com.edu.cundi.cinema.services.interfaces.ICRUD;
+import com.edu.cundi.cinema.services.interfaces.IAutorService;
+
 @Service
-@Qualifier("AutorService")
-public class AutorService implements ICRUD<Autor> {
+public class AutorService implements IAutorService {
 
     private RespuestaDTO respuesta = new RespuestaDTO();
     @Autowired
@@ -72,6 +77,12 @@ public class AutorService implements ICRUD<Autor> {
     @Override
     public RespuestaDTO create(Autor entidad) throws ConflictException, ModelNotFoundException {
         existeCedula(entidad, false);
+        existeCorreo(entidad, false);
+        if (entidad.getLibro() != null) {
+            entidad.getLibro().forEach(libro -> {
+                libro.setAutor(entidad);
+            });
+        }
         Autor autor = _autorRepository.save(entidad);
         AutorIdModel autorDto = new AutorIdModel();
         autorDto.setId(autor.getId());
@@ -81,16 +92,32 @@ public class AutorService implements ICRUD<Autor> {
         return respuesta;
     }
 
+    private void existeCorreo(Autor autor, boolean editOrCreate) throws ConflictException {
+        if (!editOrCreate) {
+            if (_autorRepository.existsByCorreo(autor.getCorreo())) {
+                throw new ConflictException("el correo ya existe digite otro.");
+            }
+
+        } else {
+            long count = _autorRepository.buscarByCorreo(autor.getId(), autor.getCorreo());
+            if (count > 0) {
+                throw new ConflictException("el correo ya existe digite otro.");
+            }
+        }
+    }
+
     public Link LinkAutor(Integer Id) throws ModelNotFoundException {
         return linkTo(methodOn(AutorController.class).getAutor(Id)).withRel("Autor");
     }
 
     public void existeCedula(Autor autor, boolean editOrCreate) throws ConflictException {
         Optional<Autor> existe = _autorRepository.findByCedula(autor.getCedula());
-        if (_autorRepository.existsByCedula(autor.getCedula())) {
-            throw new ConflictException("La cedula ya existe digite otra.");
-        }
-        if (editOrCreate) {
+
+        if (!editOrCreate) {
+            if (_autorRepository.existsByCedula(autor.getCedula())) {
+                throw new ConflictException("La cedula ya existe digite otra.");
+            }
+        } else {
             if (existe.isPresent() && existe.get().getId() != autor.getId()) {
                 throw new ConflictException("La cedula ya existe digite otra.");
             }
@@ -99,15 +126,16 @@ public class AutorService implements ICRUD<Autor> {
 
     @Override
     public RespuestaDTO edit(Autor entidad) throws ConflictException, ModelNotFoundException {
-        getById(entidad.getId());
+        Autor autor = (Autor) getById(entidad.getId()).getData();
         existeCedula(entidad, true);
-        _autorRepository.save(entidad);
+        existeCorreo(entidad, true);
+        autor.setApellido(entidad.getApellido());
+        autor.setCedula(entidad.getCedula());
+        autor.setNombre(entidad.getNombre());
+        autor.setEdad(entidad.getEdad());
+        autor.setCorreo(entidad.getCorreo());
+        _autorRepository.save(autor);
         respuesta.setMensaje("editado");
-        return respuesta;
-    }
-
-    @Override
-    public RespuestaDTO getByNombre(String nombre) {
         return respuesta;
     }
 
@@ -120,8 +148,18 @@ public class AutorService implements ICRUD<Autor> {
     }
 
     @Override
-    public Page<Autor> getPaginado(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC));
-        return _autorRepository.findAll(pageable);
+    public PaginarDTO getPaginado(int page, int pageSize) throws ModelNotFoundException {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Autor> paginado = _autorRepository.findAll(pageable);
+
+        List<AutorDTO> autoresDTOs = (List<AutorDTO>) _mapper.map(paginado.getContent(),
+                new TypeToken<List<AutorDTO>>() {
+                }.getType());
+        for (AutorDTO autorDTO : autoresDTOs) {
+            autorDTO.add(LinkAutor(autorDTO.getId()));
+        }
+        PaginarDTO paginar = new PaginarDTO(pageable.getPageNumber(), paginado.getTotalElements(),
+                pageable.getPageSize(), paginado.getTotalPages(), paginado.getNumberOfElements(), autoresDTOs);
+        return paginar;
     }
 }
