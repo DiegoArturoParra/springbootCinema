@@ -1,5 +1,7 @@
 package com.edu.cundi.cinema.services.implement;
 
+import javax.transaction.Transactional;
+
 import com.edu.cundi.cinema.DTOs.PaginarDTO;
 import com.edu.cundi.cinema.DTOs.RespuestaDTO;
 import com.edu.cundi.cinema.entity.AutorEditorial;
@@ -61,6 +63,16 @@ public class AutorEditorialServiceImpl implements IAutorEditorialService{
 	public void eliminarNativo(Integer idAutor, Integer idEditorial) throws ModelNotFoundException {
 		
 		
+	}
+
+	
+	@Transactional
+	@Override
+	public void asociarAutorEditoial() {
+		this.repo.guardarNativo(1, 1, LocalDate.now());
+		this.repo.guardarNativo(2, 1, LocalDate.now());
+		this.repo.guardarNativo(3, 1, LocalDate.now());
+		this.repo.guardarNativo(6, 1, LocalDate.now());
 	}
 	
 
