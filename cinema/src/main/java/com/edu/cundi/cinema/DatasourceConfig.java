@@ -11,6 +11,6 @@ public class DatasourceConfig {
     @Bean
     public DataSource datasource() {
         return DataSourceBuilder.create().driverClassName("org.postgresql.Driver")
-                .url("jdbc:postgresql://localhost:5432/libreria").username("postgres").password("diego").build();
+                .url("jdbc:postgresql://80.240.127.144:5432/libreria").username("postgres").password("diego").build();
     }
 }

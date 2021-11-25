@@ -9,10 +9,11 @@
         <!-- lookup parent from repository -->
     </parent>
     <groupId>com.edu.cundi</groupId>
-    <artifactId>cinema</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>cinema</name>
-    <description>Demo project for Spring Boot</description>
+    <artifactId>libreria-api</artifactId>
+    <version>1.0</version>
+    <name>libreria-api</name>
+    <description>spring boot libreria</description>
+    <packaging>war</packaging>
     <properties>
         <java.version>8</java.version>
     </properties>
@@ -62,7 +63,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-hateoas</artifactId>
@@ -71,22 +71,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-          <dependency>
+        <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
             <version>2.4.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
         </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -98,6 +96,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+             <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <useFile>false</useFile>
+                </configuration>
             </plugin>
         </plugins>
     </build>
